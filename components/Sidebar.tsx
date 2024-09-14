@@ -8,7 +8,6 @@ import { usePathname } from 'next/navigation';
 const Sidebar = () => {
 	const pathname = usePathname();
 
-	console.log('sidebarLinks: ', sidebarLinks);
 	return (
 		<section
 			className='sticky left-0 top-0 h-screen flex  w-fit flex-col justify-between
@@ -18,7 +17,6 @@ const Sidebar = () => {
 				{sidebarLinks.map((link) => {
 					const isActive =
 						pathname === link.route || pathname.startsWith(`${link.route}/`);
-					console.log('link: ', link);
 					return (
 						<Link
 							key={link.label}
