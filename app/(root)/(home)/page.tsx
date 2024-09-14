@@ -1,3 +1,5 @@
+import MeetingTypeList from '@/components/MeetingTypeList';
+
 const page = () => {
 	const now = new Date();
 	const time = now.toLocaleTimeString('us-US', {
@@ -24,6 +26,7 @@ const page = () => {
 					</div>
 				</div>
 			</div>
+			<MeetingTypeList />
 		</section>
 	);
 };
