@@ -1,5 +1,14 @@
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'Yoom',
+	description: 'Video calling app ',
+	icons: {
+		icon: '/icons/logo.svg',
+	},
+};
 export default function HomeLayout({
 	children,
 }: Readonly<{
