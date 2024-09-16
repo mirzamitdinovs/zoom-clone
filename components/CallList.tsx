@@ -1,10 +1,11 @@
 'use client';
 import { useGetCalls } from '@/hooks/useGetCalls';
 import { Call, CallRecording } from '@stream-io/video-react-sdk';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MeetingCard from './MeetingCard';
 import { useRouter } from 'next/navigation';
 import Loader from './Loader';
+import { useToast } from '@/hooks/use-toast';
 
 interface iProps {
 	type: 'upcoming' | 'recordings' | 'ended';
@@ -15,6 +16,7 @@ const CallList = ({ type }: iProps) => {
 	const { isLoading, upcomingCalls, endedCalls, callRecordings } =
 		useGetCalls();
 
+	const { toast } = useToast();
 	const getCalls = () => {
 		switch (type) {
 			case 'upcoming':
@@ -39,6 +41,26 @@ const CallList = ({ type }: iProps) => {
 				return '';
 		}
 	};
+
+	useEffect(() => {
+		const fetchRecordings = async () => {
+			try {
+				const callData = await Promise.all(
+					callRecordings.map((meeting) => meeting.queryRecordings())
+				);
+
+				const recordings = callData
+					.filter((call) => call.recordings.length > 0)
+					.flatMap((call) => call.recordings);
+
+				setRecordings(recordings);
+			} catch (error) {
+				toast({ title: 'Try again later ' });
+			}
+		};
+
+		if (type === 'recordings') fetchRecordings();
+	}, [type, callRecordings]);
 
 	const imageUrl =
 		type === 'ended'
@@ -69,7 +91,7 @@ const CallList = ({ type }: iProps) => {
 
 	const getRecordingDetails = (meeting: CallRecording) => {
 		return {
-			title: 'No Description',
+			title: meeting.filename.substring(0, 20) || 'No Description',
 			date: meeting.start_time,
 			isPreviousMeeting: type === 'ended',
 			buttonIcon1: '/icons/play.svg',
