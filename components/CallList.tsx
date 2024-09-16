@@ -58,6 +58,7 @@ const CallList = ({ type }: iProps) => {
 		return {
 			title: meeting.state.custom.description || 'No Description',
 			date: meeting.state.startsAt?.toLocaleString(),
+			// : `${meeting.state.startedAt} - ${meeting.state.endedAt}`,
 			isPreviousMeeting: type === 'ended',
 			buttonText: 'Start',
 			buttonIcon1: '',
