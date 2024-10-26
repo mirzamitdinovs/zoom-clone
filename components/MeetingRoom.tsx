@@ -5,7 +5,6 @@ import {
 	CallControls,
 	CallingState,
 	CallParticipantsList,
-	CallState,
 	CallStatsButton,
 	PaginatedGridLayout,
 	SpeakerLayout,
@@ -20,14 +19,14 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { LayoutList, Users } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import EndCallButton from './EndCallButton';
 import Loader from './Loader';
-
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
 const MeetingRoom = () => {
+	const router = useRouter();
 	const [layout, setLayout] = useState<CallLayoutType>('grid');
 	const [showParticipants, setShowParticipants] = useState(false);
 	const searchParams = useSearchParams();
@@ -61,7 +60,11 @@ const MeetingRoom = () => {
 				</div>
 			</div>
 			<div className='fixed bottom-0 flex w-full flex-wrap pb-10  items-center justify-center gap-5'>
-				<CallControls />
+				<CallControls
+					onLeave={() => {
+						router.push('/');
+					}}
+				/>
 				<DropdownMenu>
 					<div className='flex items-center'>
 						<DropdownMenuTrigger

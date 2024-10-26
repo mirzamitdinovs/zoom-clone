@@ -9,13 +9,14 @@ import HomeCard from './HomeCard';
 import MeetingModal from './MeetingModal';
 import { Textarea } from './ui/textarea';
 import ReactDatePicker from 'react-datepicker';
+import { Input } from './ui/input';
 const MeetingTypeList = () => {
 	const modalRef = useRef(null);
 	const router = useRouter();
 	const [meetingState, setMeetingState] = useState<
 		'isScheduleMeeting' | 'isJoiningMeeting' | 'isIstantMeeting' | undefined
 	>();
-	const [value, setValue] = useState({
+	const [values, setValues] = useState({
 		dateTime: new Date(),
 		description: '',
 		link: '',
@@ -31,7 +32,7 @@ const MeetingTypeList = () => {
 		if (!user || !client) return;
 
 		try {
-			if (!value.dateTime) {
+			if (!values.dateTime) {
 				toast({
 					title: 'Please select date and time ',
 				});
@@ -44,8 +45,8 @@ const MeetingTypeList = () => {
 			if (!call) throw new Error('Failed to start a call');
 
 			const startsAt =
-				value.dateTime.toISOString() || new Date(Date.now()).toISOString();
-			const description = value.description || 'Instant Meeting';
+				values.dateTime.toISOString() || new Date(Date.now()).toISOString();
+			const description = values.description || 'Instant Meeting';
 
 			await call.getOrCreate({
 				data: {
@@ -58,7 +59,7 @@ const MeetingTypeList = () => {
 
 			setCallDetails(call);
 
-			if (!value.description) {
+			if (!values.description) {
 				router.push(`/meeting/${call.id}`);
 			}
 			toast({
@@ -119,8 +120,8 @@ const MeetingTypeList = () => {
 						<Textarea
 							className='border-none bg-dark-3 focus-visible:ring-0 focus-visible:ring-offset-0'
 							onChange={(e) => {
-								setValue({
-									...value,
+								setValues({
+									...values,
 									description: e.target.value,
 								});
 							}}
@@ -132,9 +133,9 @@ const MeetingTypeList = () => {
 						</label>
 						<ReactDatePicker
 							className='w-full p-2 rounded-lg border-none bg-dark-3 focus:outline-none'
-							selected={value.dateTime}
+							selected={values.dateTime}
 							onChange={(date) => {
-								setValue({ ...value, dateTime: date! });
+								setValues({ ...values, dateTime: date! });
 							}}
 							showTimeSelect
 							timeFormat='HH:mm'
@@ -169,6 +170,20 @@ const MeetingTypeList = () => {
 				buttonText='Start Meeting'
 				handleClick={createMeeting}
 			/>
+			<MeetingModal
+				isOpen={meetingState === 'isJoiningMeeting'}
+				onClose={() => setMeetingState(undefined)}
+				title='Type the link here'
+				className='text-center'
+				buttonText='Join Meeting'
+				handleClick={() => router.push(values.link)}
+			>
+				<Input
+					placeholder='Meeting Link'
+					className='border-none bg-dark-3 focus-visible:ring-0 focus-visible:ring-offset-0'
+					onChange={(e) => setValues({ ...values, link: e.target.value })}
+				/>
+			</MeetingModal>
 		</section>
 	);
 };

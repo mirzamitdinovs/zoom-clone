@@ -20,7 +20,6 @@ const page = ({ params: { id } }: { params: { id: string } }) => {
 		setIsSetupcomplete(true);
 	};
 
-	console.log('isLoaded || isCallLoading: ', isLoaded, isCallLoading);
 	if (!isLoaded || isCallLoading) return <Loader />;
 	return (
 		<main className='h-screen w-full'>
